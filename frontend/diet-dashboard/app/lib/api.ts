@@ -11,7 +11,7 @@ export async function getInsights() {
     return await res.json();
   } catch (err) {
     console.error("Error fetching insights:", err);
-    return null; // prevents your dashboard from crashing
+    return null; 
   }
 }
 

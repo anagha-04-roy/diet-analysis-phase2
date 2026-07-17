@@ -11,8 +11,27 @@ import {
 ChartJS.register(ArcElement, Tooltip, Legend);
 
 export default function PieChart({ data }: { data: any[] }) {
-  const labels = data.map((d) => d.Diet_type);
-  const fat = data.map((d) => d["Fat(g)"]);
+  // ⭐ If filtered data is empty, show message
+  if (!Array.isArray(data) || data.length === 0) {
+    return <p>No data available for the selected filters.</p>;
+  }
+
+  // ⭐ Count recipes per diet type
+  const counts: Record<string, number> = {};
+
+  data.forEach((item) => {
+    const diet = item.Diet_type ?? item.diet_type;
+    if (!diet) return;
+    counts[diet] = (counts[diet] || 0) + 1;
+  });
+
+  const labels = Object.keys(counts);
+  const values = Object.values(counts);
+
+  // ⭐ If counts are empty (e.g., filtered to a diet with no recipes)
+  if (labels.length === 0) {
+    return <p>No data available for the selected filters.</p>;
+  }
 
   return (
     <Pie
@@ -20,8 +39,8 @@ export default function PieChart({ data }: { data: any[] }) {
         labels,
         datasets: [
           {
-            label: "Fat (g)",
-            data: fat,
+            label: "Recipe Count",
+            data: values,
             backgroundColor: [
               "rgba(255, 99, 132, 0.6)",
               "rgba(54, 162, 235, 0.6)",
@@ -31,6 +50,17 @@ export default function PieChart({ data }: { data: any[] }) {
             ],
           },
         ],
+      }}
+      options={{
+        plugins: {
+          legend: { display: true },
+          title: {
+            display: true,
+            text: "Recipe Distribution by Diet Type",
+            font: { size: 18, weight: "bold" },
+            padding: { top: 10, bottom: 20 },
+          },
+        },
       }}
     />
   );

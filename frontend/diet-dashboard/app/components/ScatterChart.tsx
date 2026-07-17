@@ -12,22 +12,25 @@ import {
 ChartJS.register(LinearScale, PointElement, Tooltip, Legend);
 
 export default function ScatterChart({ data }: { data: any[] }) {
-  const points = data.map((d) => ({
-    x: d["Protein(g)"],
-    y: d["Carbs(g)"],
-  }));
+    if (!Array.isArray(data) || data.length === 0) {
+    return <p>No data available for the selected filters.</p>;
+  }
+    const points = data.map((d) => ({
+        x: d["Protein(g)"],
+        y: d["Carbs(g)"],
+    }));
 
-  return (
-    <Scatter
-      data={{
-        datasets: [
-          {
-            label: "Protein vs Carbs",
-            data: points,
-            backgroundColor: "rgba(54, 162, 235, 0.7)",
-          },
-        ],
-      }}
-    />
-  );
-}
+    return (
+        <Scatter
+        data={{
+            datasets: [
+            {
+                label: "Protein vs Carbs",
+                data: points,
+                backgroundColor: "rgba(54, 162, 235, 0.7)",
+            },
+            ],
+        }}
+        />
+    );
+    }
